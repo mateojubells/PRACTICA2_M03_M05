@@ -1,7 +1,4 @@
-
 import java.util.Scanner;
-
-
 
 public class Main
 {
@@ -32,7 +29,6 @@ public class Main
             menuPrincipal();
         }
     }
-
     private static int llegirInt(String missatge, String error, int min, int max)
     {
         Scanner input = new Scanner(System.in);
@@ -64,8 +60,5 @@ public class Main
         } while (!controlErrors);
 
         return valor;
-
-        System.out.println("Hola bon dia");
-
     }
 }
