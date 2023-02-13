@@ -1,4 +1,7 @@
+
 import java.util.Scanner;
+
+
 
 public class Main
 {
@@ -61,5 +64,8 @@ public class Main
         } while (!controlErrors);
 
         return valor;
+
+        System.out.println("Hola bon dia");
+
     }
 }
