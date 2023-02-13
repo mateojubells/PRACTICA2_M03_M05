@@ -24,6 +24,8 @@ public class Main
                 case 1:
                     System.out.println("Hola");
                     break;
+                case 2:
+                    break;
             }
 
             menuPrincipal();
@@ -49,6 +51,39 @@ public class Main
             else
             {
                 valor = input.nextInt();
+
+                if (valor < min || valor > max)
+                {
+                    System.out.println(error);
+                    controlErrors = false;
+                }
+            }
+
+            input.nextLine();
+        } while (!controlErrors);
+
+        return valor;
+    }
+
+    private static float llegirFloat(String missatge, String error, int min, int max)
+    {
+        Scanner input = new Scanner(System.in);
+
+        boolean controlErrors = false;
+        float valor = 0.00f;
+
+        do
+        {
+            System.out.println(missatge);
+            controlErrors = input.hasNextFloat();
+
+            if (!controlErrors)
+            {
+                System.out.println(error);
+            }
+            else
+            {
+                valor = input.nextFloat();
 
                 if (valor < min || valor > max)
                 {
