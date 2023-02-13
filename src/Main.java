@@ -13,6 +13,22 @@ public class Main
 
         System.out.println(MENU_PRINCIPAL);
         int opcioMenuPrincipal = llegirInt("Escull una opció del menú: ", "ERROR: Opció de menú no vàlida", 1, 3);
+
+        if (opcioMenuPrincipal == 3)
+        {
+            System.out.println("\n" + "Apagant màquina...");
+        }
+        else
+        {
+            switch (opcioMenuPrincipal)
+            {
+                case 1:
+                    System.out.println("Hola");
+                    break;
+            }
+
+            menuPrincipal();
+        }
     }
 
     private static int llegirInt(String missatge, String error, int min, int max)
