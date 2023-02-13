@@ -31,7 +31,6 @@ public class Main
             menuPrincipal();
         }
     }
-
     private static int llegirInt(String missatge, String error, int min, int max)
     {
         Scanner input = new Scanner(System.in);
@@ -64,7 +63,6 @@ public class Main
 
         return valor;
     }
-
     private static float llegirFloat(String missatge, String error, int min, int max)
     {
         Scanner input = new Scanner(System.in);
