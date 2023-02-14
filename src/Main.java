@@ -3,16 +3,17 @@ public class Main
 {
     public static void main(String[] args)
     {
-        String[] cartellera = new String[12];
-        int[][] horari = new int[12][3];
-
-        cartelleraHorari(cartellera, horari);
-        mostrarCartelleraHoraris(cartellera, horari);
-
         menuPrincipal();
     }
     private static void menuPrincipal()
     {
+        // mateo
+        String[] cartellera = new String[12];
+        int[][] horari = new int[12][3];
+        cartelleraHorari(cartellera, horari);
+        mostrarCartelleraHoraris(cartellera, horari);
+
+        // francesc
         final String MENU_PRINCIPAL = " 1. Veure cartellera \n 2. Comprar entrades \n 3. Sortir";
 
         System.out.println(MENU_PRINCIPAL);
@@ -100,7 +101,8 @@ public class Main
 
         return valor;
     }
-    private static void cartelleraHorari(String[] cartellera, int[][] horari) {
+    private static void cartelleraHorari(String[] cartellera, int[][] horari)
+    {
         cartellera[0] = "El Gato con Botas: El último deseo";
         cartellera[1] = "Astérix y Obélix: El Reino Medio";
         cartellera[2] = "Llaman a la puerta ";
@@ -136,7 +138,9 @@ public class Main
         horari[5][2] = 15;
         horari[6][0] = 4;
     }
-    private static void mostrarCartelleraHoraris(String[] cartellera, int[][] horari){
+
+    private static void mostrarCartelleraHoraris(String[] cartellera, int[][] horari)
+    {
         for (int a = 0; a < cartellera.length; a++)
         {
             System.out.println("\n" + cartellera[a]);
