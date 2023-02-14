@@ -3,16 +3,17 @@ public class Main
 {
     public static void main(String[] args)
     {
+        String[] cartellera = new String[12];
+        int[][] horari = new int[12][3];
+
         menuPrincipal();
+        cartelleraHorari(cartellera, horari);
+
+
+
     }
     private static void menuPrincipal()
     {
-        // mateo
-        String[] cartellera = new String[12];
-        int[][] horari = new int[12][3];
-        cartelleraHorari(cartellera, horari);
-        mostrarCartelleraHoraris(cartellera, horari);
-
         // francesc
         final String MENU_PRINCIPAL = " 1. Veure cartellera \n 2. Comprar entrades \n 3. Sortir";
 
@@ -28,7 +29,7 @@ public class Main
             switch (opcioMenuPrincipal)
             {
                 case 1:
-                    System.out.println("Hola");
+                    mostrarCartelleraHoraris(cartellera, horari);
                     break;
                 case 2:
                     break;
