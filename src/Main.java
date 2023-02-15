@@ -5,19 +5,17 @@ public class Main
     public static void main(String[] args)
     {
         menuPrincipal();
+
     }
     private static void menuPrincipal()
     {
-        // mateo
-        String[] cartellera = new String[12];
-        int[][] horari = new int[12][3];
-
         final String TITOL = "||||||| CINES IMPERIAL |||||||"; // 30 Char
         final String MENU_PRINCIPAL = " 1. Veure cartellera \n" + " 2. Comprar entrades \n" + " 3. Sortir";
 
-        // Mètode per delcarar les dades del la cartellera i els horaris //
-        cartelleraHorari(horari, cartellera);
-        // mostrarCartelleraHoraris(cartellera, horari);
+        String[] cartellera = new String[9];
+        int[][] horari = new int[16][3];
+
+        cartelleraHorari(horari,cartellera);
 
         System.out.println("\n" + TITOL + "\n" + MENU_PRINCIPAL);
         int opcioMenu = llegirInt("Escull una opció del menú: ", "ERROR: Opció de menú no vàlida", 1, 3);
@@ -40,7 +38,6 @@ public class Main
             menuPrincipal();
         }
     }
-
     private static void menuVeureCartellera(String[] cartellera, int[][] horari)
     {
         final String TITOL = "|||||||| VEURE  PELIS ||||||||";
@@ -65,43 +62,6 @@ public class Main
 
             menuVeureCartellera(cartellera, horari);
         }
-    }
-    private static void cartelleraHorari(int[][] horari, String[] cartellera)
-    {
-        cartellera[0] = "El Gato con Botas: El último deseo";
-        cartellera[1] = "Astérix y Obélix: El Reino Medio";
-        cartellera[2] = "Llaman a la puerta ";
-        cartellera[3] = "Todo a la vez en todas partes";
-        cartellera[4] = "Avatar: El sentido del agua";
-        cartellera[5] = "Los Fabelman";
-        cartellera[6] = "Titanic (25 aniversario) ";
-        cartellera[7] = "El piloto";
-        cartellera[8] = "La ballena (The Whale)";
-        cartellera[9] = "Babylon";
-        cartellera[10] = "El asombroso Mauricio";
-        cartellera[11] = "Operación Fortune: El gran engaño";
-
-
-        horari[0][0] = 0;
-        horari[0][1] = 14;
-        horari[0][2] = 30;
-
-        horari[1][0] = 1;
-        horari[1][1] = 15;
-        horari[1][2] = 30;
-        horari[2][0] = 1;
-        horari[2][1] = 20;
-        horari[2][2] = 30;
-        horari[3][0] = 1;
-        horari[3][1] = 22;
-        horari[3][2] = 15;
-        horari[4][0] = 2;
-        horari[4][1] = 15;
-        horari[4][2] = 15;
-        horari[5][0] = 3;
-        horari[5][1] = 15;
-        horari[5][2] = 15;
-        horari[6][0] = 4;
     }
     private static void mostrarCartelleraHoraris(int[][] horari, String[] cartellera)
     {
@@ -190,5 +150,71 @@ public class Main
         } while (!controlErrors);
 
         return valor;
+    }
+    private static void cartelleraHorari(int[][] horari, String[] cartellera)
+    {
+        cartellera[0] = "El Gato con Botas: El último deseo";
+        cartellera[1] = "Astérix y Obélix: El Reino Medio";
+        cartellera[2] = "Llaman a la puerta ";
+        cartellera[3] = "Todo a la vez en todas partes";
+        cartellera[4] = "Avatar: El sentido del agua";
+        cartellera[5] = "Los Fabelman";
+        cartellera[6] = "Titanic (25 aniversario) ";
+        cartellera[7] = "El piloto";
+        cartellera[8] = "La ballena (The Whale)";
+        cartellera[9] = "Babylon";
+        cartellera[10] = "El asombroso Mauricio";
+        cartellera[11] = "Operación Fortune: El gran engaño";
+
+
+        horari[0][0] = 0;
+        horari[0][1] = 14;
+        horari[0][2] = 30;
+
+        horari[1][0] = 1;
+        horari[1][1] = 15;
+        horari[1][2] = 30;
+        horari[2][0] = 1;
+        horari[2][1] = 20;
+        horari[2][2] = 30;
+        horari[3][0] = 1;
+        horari[3][1] = 22;
+        horari[3][2] = 15;
+        horari[4][0] = 2;
+        horari[4][1] = 15;
+        horari[4][2] = 15;
+        horari[5][0] = 3;
+        horari[5][1] = 15;
+        horari[5][2] = 15;
+        horari[6][0] = 4;
+        horari[6][1] = 17;
+        horari[6][2] = 30;
+        horari[7][0] = 19;
+        horari[7][1] = 45;
+        horari[8][0] = 22;
+        horari[8][1] = 15;
+
+        horari[9][0] = 5;
+        horari[9][1] = 15;
+        horari[9][2] = 15;
+
+        horari[10][0] = 6;
+        horari[10][1] = 10;
+        horari[10][2] = 15;
+        horari[11][0] = 12;
+        horari[11][1] = 45;
+
+        horari[12][0] = 7;
+        horari[12][1] = 15;
+        horari[12][2] = 15;
+
+        horari[13][0] = 8;
+        horari[13][1] = 17;
+        horari[13][2] = 30;
+        horari[14][0] = 19;
+        horari[14][1] = 45;
+        horari[15][0] = 22;
+        horari[15][1] = 15;
+
     }
 }
