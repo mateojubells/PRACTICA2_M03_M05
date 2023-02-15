@@ -32,6 +32,7 @@ public class Main
                     menuVeureCartellera(cartellera, horari);
                     break;
                 case 2:
+                    // menuComprarEntrades();
                     break;
             }
 
@@ -85,6 +86,14 @@ public class Main
             }
 
             System.out.println();
+        }
+    }
+    private static void mostrarNomsPelicules(String[] cartellera)
+    {
+        // System.out.println("\n" + "|||||| NOMS PEL·LÍCULES ||||||");
+        for (String nomPelicula : cartellera)
+        {
+            System.out.println(" " + nomPelicula);
         }
     }
     private static int llegirInt(String missatge, String error, int min, int max)
