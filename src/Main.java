@@ -3,17 +3,14 @@ public class Main
 {
     public static void main(String[] args)
     {
-        String[] cartellera = new String[12];
-        int[][] horari = new int[12][3];
-
         menuPrincipal();
-        cartelleraHorari(cartellera, horari);
-
-
 
     }
     private static void menuPrincipal()
     {
+        String[] cartellera = new String[9];
+        int[][] horari = new int[16][3];
+        cartelleraHorari(cartellera, horari);
         // francesc
         final String MENU_PRINCIPAL = " 1. Veure cartellera \n 2. Comprar entrades \n 3. Sortir";
 
@@ -30,6 +27,7 @@ public class Main
             {
                 case 1:
                     mostrarCartelleraHoraris(cartellera, horari);
+
                     break;
                 case 2:
                     break;
@@ -114,9 +112,7 @@ public class Main
         cartellera[6] = "Titanic (25 aniversario) ";
         cartellera[7] = "El piloto";
         cartellera[8] = "La ballena (The Whale)";
-        cartellera[9] = "Babylon";
-        cartellera[10] = "El asombroso Mauricio";
-        cartellera[11] = "Operación Fortune: El gran engaño";
+
 
 
         horari[0][0] = 0;
@@ -132,13 +128,46 @@ public class Main
         horari[3][0] = 1;
         horari[3][1] = 22;
         horari[3][2] = 15;
+
         horari[4][0] = 2;
         horari[4][1] = 15;
         horari[4][2] = 15;
+
         horari[5][0] = 3;
         horari[5][1] = 15;
         horari[5][2] = 15;
+
         horari[6][0] = 4;
+        horari[6][1] = 17;
+        horari[6][2] = 30;
+        horari[7][0] = 19;
+        horari[7][1] = 45;
+        horari[8][0] = 22;
+        horari[8][1] = 15;
+
+        horari[9][0] = 5;
+        horari[9][1] = 15;
+        horari[9][2] = 15;
+
+        horari[10][0] = 6;
+        horari[10][1] = 10;
+        horari[10][2] = 15;
+        horari[11][0] = 12;
+        horari[11][1] = 45;
+
+        horari[12][0] = 7;
+        horari[12][1] = 15;
+        horari[12][2] = 15;
+
+        horari[13][0] = 8;
+        horari[13][1] = 17;
+        horari[13][2] = 30;
+        horari[14][0] = 19;
+        horari[14][1] = 45;
+        horari[15][0] = 22;
+        horari[15][1] = 15;
+
+
     }
         private static void mostrarCartelleraHoraris(String[] cartellera, int[][] horari){
         for (int a = 0; a < cartellera.length; a++)
