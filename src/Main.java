@@ -5,7 +5,6 @@ public class Main
     public static void main(String[] args)
     {
         menuPrincipal();
-
     }
     private static void menuPrincipal()
     {
@@ -162,9 +161,6 @@ public class Main
         cartellera[6] = "Titanic (25 aniversario) ";
         cartellera[7] = "El piloto";
         cartellera[8] = "La ballena (The Whale)";
-        cartellera[9] = "Babylon";
-        cartellera[10] = "El asombroso Mauricio";
-        cartellera[11] = "Operación Fortune: El gran engaño";
 
 
         horari[0][0] = 0;
