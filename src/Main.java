@@ -1,4 +1,4 @@
-import javax.management.MalformedObjectNameException;
+import java.util.Objects;
 import java.util.Scanner;
 public class Main
 {
@@ -43,7 +43,7 @@ public class Main
         final String MENU_CARTELLERA = " 1. Veure cartellera \n" + " 2. Veure noms pel·lícules \n" + " 3. Buscar pel·lícula \n" + " 4. Buscar segons hora \n" + " 5. Tornar al inici";
 
         System.out.println("\n" + TITOL + "\n" + MENU_CARTELLERA);
-        int opcioMenu = llegirInt("Escull una opció del menú: ", "ERROR: Opció de menú no vàlida", 1, 4);
+        int opcioMenu = llegirInt("Escull una opció del menú: ", "ERROR: Opció de menú no vàlida", 1, 5);
 
         if (opcioMenu == 5)
         {
@@ -57,11 +57,83 @@ public class Main
                     System.out.print("\n" + "||||||||| CARTELLERA |||||||||");
                     mostrarCartelleraHoraris(horari, cartellera);
                     break;
+                case 2:
+                    break;
+                case 3:
+                    System.out.println("\n"+ "||||||||| Pelicula |||||||||");
+                    String nomPelicula = buscarPelicula(cartellera, horari,"Escull una pelicula a buscar "+"\n (Per sortir escrigui exit): ");
+                    for (int a = 0; a < cartellera.length; a++) {
+                        if (Objects.equals(nomPelicula,cartellera[a]))
+                        {
+
+                        }
+                    }
+                    break;
             }
 
             menuVeureCartellera(cartellera, horari);
         }
     }
+
+    private static String buscarPelicula(String[] cartellera, int[][] horari, String missatge){
+        Scanner llegir = new Scanner(System.in);
+        boolean trobat= false;
+        int posicio=0;
+
+        System.out.print(missatge);
+        String nomPelicula = llegir.nextLine();
+        if (Objects.equals(nomPelicula.toLowerCase(),"exit")){
+            System.out.println("Sortint...");
+        }else {
+            for (int i =0; i<cartellera.length; i++){
+                if (Objects.equals(cartellera[i].toLowerCase(), nomPelicula.toLowerCase())){
+                    trobat =true;
+                    posicio = i;
+                }}
+            if (trobat==true){
+                System.out.print(cartellera[posicio]);
+                System.out.print(": esta disponible!!");
+                mostrarHorariPelicula(cartellera, horari, nomPelicula);
+
+            }else {
+                System.out.println("Pelicula no trobada, torna a intentar");
+                buscarPelicula(cartellera, horari, missatge);
+            }
+        }
+
+
+        return nomPelicula;
+
+    }
+
+
+    private static void mostrarHorariPelicula(String[] cartellera, int[][] horari, String nomPelicula)
+    {
+        for (int a = 0; a < cartellera.length; a++)
+        {
+            if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+            {
+                System.out.print("\n" + "Horaris disponibles: ");
+
+                for (int i = 0; i < horari.length; i++)
+                {
+                    for (int j = 0; j < horari[j].length; j++)
+                    {
+                        if (horari[i][0] == a)
+                        {
+                            System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+
     private static void mostrarCartelleraHoraris(int[][] horari, String[] cartellera)
     {
         for (int a = 0; a < cartellera.length; a++)
@@ -154,7 +226,7 @@ public class Main
     {
         cartellera[0] = "El Gato con Botas: El último deseo";
         cartellera[1] = "Astérix y Obélix: El Reino Medio";
-        cartellera[2] = "Llaman a la puerta ";
+        cartellera[2] = "Llaman a la puerta";
         cartellera[3] = "Todo a la vez en todas partes";
         cartellera[4] = "Avatar: El sentido del agua";
         cartellera[5] = "Los Fabelman";
@@ -185,10 +257,12 @@ public class Main
         horari[6][0] = 4;
         horari[6][1] = 17;
         horari[6][2] = 30;
-        horari[7][0] = 19;
-        horari[7][1] = 45;
-        horari[8][0] = 22;
-        horari[8][1] = 15;
+        horari[7][0] = 4;
+        horari[7][1] = 19;
+        horari[7][2] = 45;
+        horari[8][0] = 4;
+        horari[8][1] = 22;
+        horari[8][2] = 15;
 
         horari[9][0] = 5;
         horari[9][1] = 15;
@@ -197,20 +271,23 @@ public class Main
         horari[10][0] = 6;
         horari[10][1] = 10;
         horari[10][2] = 15;
-        horari[11][0] = 12;
-        horari[11][1] = 45;
+        horari[11][0] = 6;
+        horari[11][1] = 12;
+        horari[11][2] = 45;
 
         horari[12][0] = 7;
-        horari[12][1] = 15;
+        horari[12][1] = 18;
         horari[12][2] = 15;
 
         horari[13][0] = 8;
         horari[13][1] = 17;
         horari[13][2] = 30;
-        horari[14][0] = 19;
-        horari[14][1] = 45;
-        horari[15][0] = 22;
-        horari[15][1] = 15;
+        horari[14][0] = 8;
+        horari[14][1] = 19;
+        horari[14][2] = 45;
+        horari[15][0] = 9;
+        horari[15][1] = 22;
+        horari[15][2] = 15;
 
     }
 }
