@@ -285,7 +285,7 @@ public class Main
         horari[14][0] = 8;
         horari[14][1] = 19;
         horari[14][2] = 45;
-        horari[15][0] = 9;
+        horari[15][0] = 8;
         horari[15][1] = 22;
         horari[15][2] = 15;
 
