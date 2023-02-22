@@ -42,10 +42,10 @@ public class Main
     private static void menuVeureCartellera(int[][] horari, String[] cartellera)
     {
         final String TITOL = "|||||||| VEURE  PELIS ||||||||";
-        final String MENU_CARTELLERA = " 1. Veure cartellera \n" + " 2. Veure noms pel·lícules \n" + " 3. Buscar pel·lícula \n" + " 4. Buscar segons hora \n" + " 5. Tornar al inici";
+        final String MENU_CARTELLERA = " 1. Veure cartellera \n" + " 2. Veure noms pel·lícules \n" + " 3. Buscar pel·lícula \n" + " 4. Buscar segons sessió \n" + " 5. Tornar al inici";
 
         System.out.println("\n" + TITOL + "\n" + MENU_CARTELLERA);
-
+ 
         int opcioMenu = llegirInt("Escull una opció del menú: ", " ERROR: Opció de menú no vàlida", 1, 5);
 
         if (opcioMenu == 5)
@@ -61,6 +61,7 @@ public class Main
                     mostrarCartelleraHoraris(horari, cartellera);
                     break;
                 case 2:
+                    mostrarNomsPelicules(cartellera);
                     break;
                 case 3:
                     System.out.println("\n"+ "||||||||| Pelicula |||||||||");
@@ -72,6 +73,7 @@ public class Main
                         }
                     }
                     break;
+
             }
 
             menuVeureCartellera(horari, cartellera);
@@ -260,11 +262,13 @@ public class Main
     }
     private static void mostrarNomsPelicules(String[] cartellera)
     {
+        System.out.println("");
         for (String nomPelicula : cartellera)
         {
             System.out.println(" " + nomPelicula);
         }
     }
+
     private static int llegirInt(String missatge, String error, int min, int max)
     {
         Scanner input = new Scanner(System.in);
