@@ -1,4 +1,5 @@
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 public class Main
 {
@@ -12,10 +13,12 @@ public class Main
         final String MENU_PRINCIPAL = " 1. Veure cartellera \n" + " 2. Comprar entrades \n" + " 3. Sortir";
 
         String[] cartellera = new String[9];
+        String[][] sales = new String [9][84];
         int[][] horari = new int[16][3];
+        int[][] entrades = new int[10][2];
 
         // Mètode per omplir la matriu i el vector
-        omplirCartelleraHorari(horari,cartellera);
+        omplirCartelleraHorari(horari, sales, cartellera);
 
         System.out.println("\n" + TITOL + "\n" + MENU_PRINCIPAL);
         int opcioMenu = llegirInt("Escull una opció del menú: ", " ERROR: Opció de menú no vàlida", 1, 3);
@@ -32,7 +35,7 @@ public class Main
                     menuVeureCartellera(horari, cartellera);
                     break;
                 case 2:
-                    comprarEntrades(horari, cartellera);
+                    comprarEntrades(horari, sales, entrades, cartellera);
                     break;
             }
 
@@ -107,11 +110,13 @@ public class Main
         return nomPelicula;
 
     }
-    private static void comprarEntrades(int[][] horari,String[] cartellera)
+    private static void comprarEntrades(int[][] horari, String[][] sales, int[][] entrades, String[] cartellera)
     {
         Scanner input = new Scanner(System.in);
 
-        String nomPelicula, horariComplet;
+        String nomPelicula, horariComplet = null;
+
+        System.out.println("\n" + "|||||| COMPRAR ENTRADES ||||||");
 
         mostrarNomsPelicules(cartellera);
 
@@ -128,6 +133,18 @@ public class Main
 
         mostrarHorariPelicula(cartellera, horari, nomPelicula);
 
+        buscarHorari(horari, cartellera, nomPelicula, horariComplet);
+
+        int numButaquesLliures = 80 - contarButaquesLliures(sales, cartellera, nomPelicula);
+
+        int numEntrades = llegirInt("Introdueix el número d'entrades (" + numButaquesLliures + " disponibles): ", " ERROR: Quantitat d'entrades no vàlid", 1, numButaquesLliures);
+
+        escollirButaca(sales, entrades, cartellera, nomPelicula, numEntrades);
+    }
+    private static void buscarHorari(int[][] horari, String[] cartellera, String nomPelicula, String horariComplet)
+    {
+        Scanner input = new Scanner(System.in);
+
         boolean formatHorari = false;
 
         do
@@ -135,7 +152,11 @@ public class Main
             System.out.print("\n" + "Escull una sessió (HH:MM): ");
             horariComplet = input.nextLine();
 
-            if (!Objects.equals(horariComplet.charAt(2), ':')) // Per comparar amb el char.At() s'ha de fer amb ''
+            if (horariComplet.length() != 5) // Comprovar que l'hora no tingui menys/més de 5 caràcters
+            {
+                System.out.print(" ERROR: Format d'horari no vàlid");
+            }
+            else if (!Objects.equals(horariComplet.charAt(2), ':')) // Per comparar amb el char.At() s'ha de fer amb ''
             {
                 System.out.print(" ERROR: Format d'horari no vàlid");
             }
@@ -145,6 +166,100 @@ public class Main
                 else { System.out.print(" ERROR: Horari no disponible per aquesta pel·lícula"); }
             }
         } while (!formatHorari);
+    }
+    private static int contarButaquesLliures(String[][] sales, String[] cartellera, String nomPelicula)
+    {
+        int numButaques = 0;
+
+        for (int a = 0; a < cartellera.length; a++)
+        {
+            if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+            {
+                for (int i = 0; i < sales.length; i++)
+                {
+                    for (int j = 0; j < sales[i].length; j++)
+                    {
+                        if (Objects.equals(sales[i][j], "--"))
+                        {
+                            numButaques++;
+                        }
+                    }
+
+                    break;
+                }
+
+                break;
+            }
+        }
+
+        return numButaques;
+    }
+    private static void escollirButaca(String[][] sales, int[][] entrades, String[] cartellera, String nomPelicula, int numEntrades)
+    {
+        // TODO: Fer el tema de comprovar que la butaca no estigui buida
+
+        boolean butacaLliure = false;
+        int butaca = 0;
+
+        do
+        {
+            mostrarSala(sales, cartellera, nomPelicula);
+            // numEntrades--;
+            butacaLliure = true;
+        } while (!butacaLliure /* || numEntrades > 0 */);
+    }
+    private static void mostrarSala(String[][] sales, String[] cartellera, String nomPelicula)
+    {
+        int finalFila = 20, columna1 = 3, columna2 = 15;
+
+        System.out.println("\n" + "||||||||||||||||||||||||||||||||||||||||||||||||||||| PANTALLA |||||||||||||||||||||||||||||||||||||||||||||||||||||");
+        System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + "| FILA |");
+
+        for (int a = 0; a < cartellera.length; a++)
+        {
+            if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+            {
+                for (int i = 0; i < sales.length; i++)
+                {
+                    for (int j = 0; j < sales[i].length; j++)
+                    {
+                        if (j == 0)
+                        {
+                            System.out.print("|");
+                        }
+
+                        if (j != finalFila)
+                        {
+                            System.out.print(" " + sales[i][j] + " |");
+                        }
+                        else
+                        {
+                            System.out.print("- " + sales[i][j] + " -|");
+                        }
+
+                        if (j == finalFila && j != (sales[i].length - 1))
+                        {
+                            System.out.print("\n" + "|");
+                            finalFila += 21;
+                        }
+                        else if (j == columna1)
+                        {
+                            System.out.print("   |");
+                            columna1 += 21;
+                        }
+                        else if (j == columna2)
+                        {
+                            System.out.print("   |");
+                            columna2 += 21;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        System.out.println();
     }
     private static boolean comprovarHorariExisteix(int[][] horari, String[] cartellera, String horariComplet, String nomPelicula)
     {
@@ -157,7 +272,7 @@ public class Main
         {
             for (int a = 0; a < cartellera.length; a++)
             {
-                if (Objects.equals(cartellera[a], nomPelicula))
+                if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
                 {
                     for (int i = 0; i < horari.length; i++)
                     {
@@ -329,7 +444,7 @@ public class Main
 
         return valor;
     }
-    private static void omplirCartelleraHorari(int[][] horari, String[] cartellera)
+    private static void omplirCartelleraHorari(int[][] horari, String[][] sales, String[] cartellera)
     {
         cartellera[0] = "El Gato con Botas: El último deseo";
 
@@ -405,5 +520,62 @@ public class Main
         horari[15][0] = 8;
         horari[15][1] = 22;
         horari[15][2] = 15;
+
+        // Omplir sales amb número de butaques
+        int butaca = 0;
+
+        for (int i = 0; i < sales.length; i++)
+        {
+            for (int j = 0; j < sales[i].length; j++) // S'ha de posar la i :(
+            {
+                if (butaca < 9)
+                {
+                    sales[i][j] = "0" + (++butaca);
+                }
+                else
+                {
+                    sales[i][j] = "" + (++butaca);
+                }
+
+                if (butaca == 21)
+                {
+                    butaca = 0;
+                }
+            }
+        }
+
+        // Possar algunes butaques plenes
+        Random rand = new Random();
+
+        for (int i = 0; i < sales.length; i++)
+        {
+            int contador = 0;
+
+            for (int j = 0; j < sales[i].length; j++)
+            {
+                if (contador != 25)
+                {
+                    int posicioRandom = rand.nextInt((49) + 1);
+                    contador++;
+                    sales[i][posicioRandom] = "--";
+                }
+            }
+        }
+
+        // Possar num a la fila
+        int numFila = 0, fila = 20;
+
+        for (int i = 0; i < sales.length; i++)
+        {
+            for (int j = 0; j < sales[i].length; j++)
+            {
+                if (j == fila)
+                {
+                    sales[i][j] = "0" + (++numFila);
+
+                    fila += 21;
+                }
+            }
+        }
     }
 }
