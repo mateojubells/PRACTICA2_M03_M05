@@ -31,6 +31,7 @@ public class Main
                     menuVeureCartellera(cartellera, horari);
                     break;
                 case 2:
+
                     break;
             }
 
