@@ -59,6 +59,7 @@ public class Main
                     mostrarCartelleraHoraris(horari, cartellera);
                     break;
                 case 2:
+
                     break;
                 case 3:
                     System.out.println("\n"+ "||||||||| Pelicula |||||||||");
@@ -161,7 +162,7 @@ public class Main
     private static void buscarPerSesio(String[] cartellera, int[][] horari)
     {
         int hora;
-        hora = llegirInt("Introdueix la hora a la que vols anar: ", "Aqueta hora no existeix", 0,24);
+        hora = llegirInt("Introdueix la hora a la que vols anar: ", "Aquesta hora no existeix", 0,24);
         for (int i = 0; i < cartellera.length; i++) {
             if (hora == horari[i][1]){
                 int posicio= horari[i][0];
@@ -172,18 +173,11 @@ public class Main
                             if (hora == horari[j][1]){
                                 System.out.print(horari[j][1]+":");
                                 System.out.println(horari[j][2]);
-                            }else{
-                                System.out.println("No hi han horaris disponible per aquesta franja");
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
     }
     private static int llegirInt(String missatge, String error, int min, int max)
