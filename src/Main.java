@@ -69,13 +69,16 @@ public class Main
                         }
                     }
                     break;
+                case 4:
+                    buscarPerSesio(cartellera, horari);
+                    break;
             }
 
             menuVeureCartellera(cartellera, horari);
         }
     }
-
-    private static String buscarPelicula(String[] cartellera, int[][] horari, String missatge){
+    private static String buscarPelicula(String[] cartellera, int[][] horari, String missatge)
+    {
         Scanner llegir = new Scanner(System.in);
         boolean trobat= false;
         int posicio=0;
@@ -105,8 +108,6 @@ public class Main
         return nomPelicula;
 
     }
-
-
     private static void mostrarHorariPelicula(String[] cartellera, int[][] horari, String nomPelicula)
     {
         for (int a = 0; a < cartellera.length; a++)
@@ -132,8 +133,6 @@ public class Main
             }
         }
     }
-
-
     private static void mostrarCartelleraHoraris(int[][] horari, String[] cartellera)
     {
         for (int a = 0; a < cartellera.length; a++)
@@ -156,6 +155,34 @@ public class Main
             }
 
             System.out.println();
+        }
+    }
+    private static void buscarPerSesio(String[] cartellera, int[][] horari)
+    {
+        int hora;
+        hora = llegirInt("Introdueix la hora a la que vols anar: ", "Aqueta hora no existeix", 0,24);
+        for (int i = 0; i < cartellera.length; i++) {
+            if (hora == horari[i][1]){
+                int posicio= horari[i][0];
+                System.out.println(cartellera[posicio]);
+                for (int j = 0; j < horari.length; j++) {
+                    for (int k = 0; k <2; k++) {
+                        if (posicio == horari[j][k]){
+                            if (hora == horari[j][1]){
+                                System.out.print(horari[j][1]+":");
+                                System.out.println(horari[j][2]);
+                            }else{
+                                System.out.println("No hi han horaris disponible per aquesta franja");
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
         }
     }
     private static int llegirInt(String missatge, String error, int min, int max)
