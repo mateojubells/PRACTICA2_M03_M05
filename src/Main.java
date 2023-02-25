@@ -79,7 +79,7 @@ public class Main
                     }
                     break;
                 case 4:
-                    buscarPerSesio(cartellera, horari);
+                    buscarPerSesio(horari, cartellera);
                     break;
             }
 
@@ -112,8 +112,21 @@ public class Main
             if (trobat==true)
             {
                 System.out.print(cartellera[posicio]);
-                System.out.print(": esta disponible!!");
-                // mostrarHorariPelicula(cartellera, horari, nomPelicula);
+                System.out.println(": esta disponible!!");
+                System.out.println("Els horaris disponibles son: ");
+
+                for (int i = 0; i < 16; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (horari[i][j]==posicio){
+                            System.out.print(horari[i][1]+":" +horari[i][2]);
+                            System.out.println("  ");
+                        }
+
+
+                    }
+
+                }
+
 
             }
             else
@@ -695,37 +708,70 @@ public class Main
             System.out.println();
         }
     }
-    private static void buscarPerSesio(String[] cartellera, int[][] horari)
-    {
-        int hora;
+    private static void buscarPerSesio(int[][] horari, String[] cartellera){
+        Scanner llegir = new Scanner(System.in);
+        boolean horaExisteix=false;
+        boolean trobat = false;
+        String hora="";
+        int hores=0;
+        int minuts=0;
+        int posicio=0;
+        int peli=0;
+        int imprimirPosicio=0;
+        System.out.println("Introdueix la hora que vols anar");
+        hora = llegir.nextLine();
+        if (hora.substring(0, 1).matches("[a-z]*")||hora.substring(3, 4).matches("[a-z]*")||hora.substring(0, 1).matches("[A-Z]*")||hora.substring(3, 4).matches("[A-Z]*")){
+            System.out.println("Valor no valid");
+            hora = "";
+            buscarPerSesio(horari, cartellera);
+        }
+        hores = convertirHores(hora);
+        minuts = convertirMinuts(hora);
 
-        hora = llegirInt("Introdueix la hora a la que vols anar: ", "Aquesta hora no existeix", 0,24);
-
-        for (int i = 0; i < cartellera.length; i++)
+        if (!(hores > 23 || hores < 0) || !(minuts > 59 || minuts < 0))
         {
-            if (hora == horari[i][1])
+            for (int a = 0; a < cartellera.length; a++)
             {
-                int posicio= horari[i][0];
-
-                System.out.println(cartellera[posicio]);
-
-                for (int j = 0; j < horari.length; j++)
+                for (int i = 0; i < horari.length; i++)
                 {
-                    for (int k = 0; k <2; k++)
+                    for (int j = 0; j < horari[j].length; j++)
                     {
-                        if (posicio == horari[j][k])
+                        if (horari[i][0] == a)
                         {
-                            if (hora == horari[j][1])
+                            if (hores == horari[i][1] && minuts == horari[i][2])
                             {
-                                System.out.print(horari[j][1]+":");
-                                System.out.println(horari[j][2]);
+                                horaExisteix = true;
+                                posicio = i;
                             }
                         }
                     }
                 }
             }
         }
-    }
+        if (horaExisteix == true){
+            for (int i = 0; i <16; i++) {
+                trobat = false;
+                for (int j = 0; j < 3; j++) {
+                    if (horari[i][1]>hores){
+                        peli = horari[i][0];
+                        trobat= true;
+                        imprimirPosicio=i;
+                    } else if (horari[i][1]==hores&&horari[i][2]>=minuts) {
+                        peli = horari[i][0];
+                        trobat= true;
+                        imprimirPosicio=i;
+                    }
+                }
+                if (trobat == true){
+                    System.out.println(cartellera[peli]);
+                    System.out.println(horari[imprimirPosicio][1]+":"+ horari[imprimirPosicio][2]);
+                    System.out.println("");
+                }
+
+            }
+            System.out.println();
+
+        } }
     private static void mostrarNomsPelicules(String[] cartellera)
     {
         for (String nomPelicula : cartellera)
