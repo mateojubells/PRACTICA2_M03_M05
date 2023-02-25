@@ -1,3 +1,6 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
@@ -5,20 +8,18 @@ public class Main
 {
     public static void main(String[] args)
     {
-        menuPrincipal();
-    }
-    private static void menuPrincipal()
-    {
-        final String TITOL = "||||||| CINES IMPERIAL |||||||"; // 30 Char
-        final String MENU_PRINCIPAL = " 1. Veure cartellera \n" + " 2. Comprar entrades \n" + " 3. Sortir";
-
         String[] cartellera = new String[9];
         String[][] sales = new String [9][84];
         int[][] horari = new int[16][3];
-        int[][] entrades = new int[10][2];
 
-        // Mètode per omplir la matriu i el vector
         omplirCartelleraHorari(horari, sales, cartellera);
+
+        menuPrincipal(horari, sales, cartellera);
+    }
+    private static void menuPrincipal(int[][] horari, String[][] sales, String[] cartellera)
+    {
+        final String TITOL = "||||||| CINES IMPERIAL |||||||"; // 30 Char
+        final String MENU_PRINCIPAL = " 1. Veure cartellera \n" + " 2. Comprar entrades \n" + " 3. Sortir";
 
         System.out.println("\n" + TITOL + "\n" + MENU_PRINCIPAL);
         int opcioMenu = llegirInt("Escull una opció del menú: ", " ERROR: Opció de menú no vàlida", 1, 3);
@@ -35,11 +36,11 @@ public class Main
                     menuVeureCartellera(horari, cartellera);
                     break;
                 case 2:
-                    comprarEntrades(horari, sales, entrades, cartellera);
+                    comprarEntrades(horari, sales, cartellera);
                     break;
             }
 
-            menuPrincipal();
+            menuPrincipal(horari, sales, cartellera);
         }
     }
     private static void menuVeureCartellera(int[][] horari, String[] cartellera)
@@ -64,9 +65,11 @@ public class Main
                     mostrarCartelleraHoraris(horari, cartellera);
                     break;
                 case 2:
+                    System.out.print("\n" + "||||||||| CARTELLERA |||||||||");
+                    mostrarNomsPelicules(cartellera);
                     break;
                 case 3:
-                    System.out.println("\n"+ "||||||||| Pelicula |||||||||");
+                    System.out.println("\n"+ "||||| BUSCAR  PEL·LÍCULA |||||");
                     String nomPelicula = buscarPelicula(cartellera, horari,"Escull una pelicula a buscar "+"\n (Per sortir escrigui exit): ");
                     for (int a = 0; a < cartellera.length; a++) {
                         if (Objects.equals(nomPelicula,cartellera[a]))
@@ -85,36 +88,48 @@ public class Main
     }
     private static String buscarPelicula(String[] cartellera, int[][] horari, String missatge){
         Scanner llegir = new Scanner(System.in);
+
         boolean trobat= false;
         int posicio=0;
 
         System.out.print(missatge);
         String nomPelicula = llegir.nextLine();
-        if (Objects.equals(nomPelicula.toLowerCase(),"exit")){
+
+        if (Objects.equals(nomPelicula.toLowerCase(),"exit"))
+        {
             System.out.println("Sortint...");
-        }else {
-            for (int i =0; i<cartellera.length; i++){
-                if (Objects.equals(cartellera[i].toLowerCase(), nomPelicula.toLowerCase())){
+        }
+        else
+        {
+            for (int i =0; i<cartellera.length; i++)
+            {
+                if (Objects.equals(cartellera[i].toLowerCase(), nomPelicula.toLowerCase()))
+                {
                     trobat =true;
                     posicio = i;
-                }}
-            if (trobat==true){
+                }
+            }
+            if (trobat==true)
+            {
                 System.out.print(cartellera[posicio]);
                 System.out.print(": esta disponible!!");
-                mostrarHorariPelicula(cartellera, horari, nomPelicula);
+                // mostrarHorariPelicula(cartellera, horari, nomPelicula);
 
-            }else {
+            }
+            else
+            {
                 System.out.println("Pelicula no trobada, torna a intentar");
                 buscarPelicula(cartellera, horari, missatge);
             }
         }
 
-
         return nomPelicula;
-
     }
-    private static void comprarEntrades(int[][] horari, String[][] sales, int[][] entrades, String[] cartellera)
+    private static void comprarEntrades(int[][] horari, String[][] sales, String[] cartellera)
     {
+        ArrayList<Integer> butaquesResevades = new ArrayList<>();
+        ArrayList<Integer> filesResevades = new ArrayList<>();
+
         Scanner input = new Scanner(System.in);
 
         String nomPelicula, horariComplet = null;
@@ -134,17 +149,291 @@ public class Main
             }
         } while (!comprovarPeliculaExisteix(cartellera, nomPelicula));
 
-        mostrarHorariPelicula(cartellera, horari, nomPelicula);
+        int idPelicula = buscarIdPelicula(cartellera, nomPelicula);
+        boolean numHorarisPelicules = numHorarisPelicules(horari, idPelicula);
 
-        buscarHorari(horari, cartellera, nomPelicula, horariComplet);
+        // Horaris
+        if (numHorarisPelicules)
+        {
+            System.out.print("\n" + "Horaris disponibles: ");
+            mostrarHorariPelicula(horari, idPelicula, numHorarisPelicules);
 
-        int numButaquesLliures = 80 - contarButaquesLliures(sales, cartellera, nomPelicula);
+            horariComplet = buscarHorari(horari, idPelicula, horariComplet);
+        }
+        else
+        {
+            System.out.print("\n" + "Únic horari disponible: ");
+            mostrarHorariPelicula(horari, idPelicula, numHorarisPelicules);
+            horariComplet = buscarHorariUnic(horari, idPelicula, horariComplet);
+
+            System.out.println();
+        }
+
+        // Escollir butaca
+        int numButaquesLliures = 80 - contarButaquesLliures(sales, idPelicula);
 
         int numEntrades = llegirInt("Introdueix el número d'entrades (" + numButaquesLliures + " disponibles): ", " ERROR: Quantitat d'entrades no vàlid", 1, numButaquesLliures);
 
-        escollirButaca(sales, entrades, cartellera, nomPelicula, numEntrades);
+        escollirButaca(butaquesResevades, filesResevades, sales, numEntrades, idPelicula);
+
+        // Pagar
+        pagament(butaquesResevades, filesResevades, sales, cartellera, nomPelicula, horariComplet, idPelicula, numEntrades);
+        posarButaquesOcupades(sales, idPelicula);
     }
-    private static void buscarHorari(int[][] horari, String[] cartellera, String nomPelicula, String horariComplet)
+    private static String buscarHorariUnic(int[][] horari, int idPelicula, String horariComplet)
+    {
+        for (int[] hora : horari)
+        {
+            if (hora[0] == idPelicula)
+            {
+                horariComplet = hora[1] + ":" + hora[2];
+
+                break;
+            }
+        }
+
+        return horariComplet;
+    }
+    private static void pagament(ArrayList<Integer> butaquesResevades, ArrayList<Integer> filesResevades, String[][] sales, String[] cartellera, String nomPelicula, String horariComplet, int idPelicula, int numEntrades)
+    {
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter dia = DateTimeFormatter.ofPattern("E");
+        String diaSetmana = myDateObj.format(dia);
+
+        final String MENU_PAGAR = """
+                1. Targeta\s
+                2. Metàl·lic (màx. 50€)\s
+                3. Cancelar compra""".indent(1);
+
+        final float PREU_ENTRADA;
+
+        if (Objects.equals(diaSetmana, "vie") || Objects.equals(diaSetmana, "sáb") || Objects.equals(diaSetmana, "dom")) { PREU_ENTRADA = 8.50f; }
+        else { PREU_ENTRADA = 4.50f; }
+
+        float preuCompra = PREU_ENTRADA * numEntrades;
+
+        nomPelicula = cartellera[idPelicula];
+
+        int numCaractersPelicula = (33 - nomPelicula.length()) / 2;
+
+        System.out.println("\n" + "|||||||||| PAGAMENT ||||||||||" + "\n" + MENU_PAGAR);
+        int opcioMenuPagar = llegirInt("Escull una opció: ", "ERROR: Opció de menú no vàlida", 1, 3);
+
+        switch (opcioMenuPagar) {
+            case 1 -> {
+                pagamentTargeta(preuCompra);
+                mostrarEntrades(butaquesResevades, filesResevades, PREU_ENTRADA, nomPelicula, horariComplet, numEntrades, numCaractersPelicula, idPelicula);
+            }
+            case 2 -> {
+                pagamentMetalic(preuCompra);
+                mostrarEntrades(butaquesResevades, filesResevades, PREU_ENTRADA, nomPelicula, horariComplet, numEntrades, numCaractersPelicula, idPelicula);
+            }
+            case 3 -> cancelarCompra(butaquesResevades, sales, idPelicula);
+        }
+    }
+    private static void mostrarEntrades(ArrayList<Integer> butaquesResevades, ArrayList<Integer> filesResevades, float PREU_ENTRADA, String nomPelicula, String horariComplet, int numEntrades, int numCaractersPelicula, int idPelicula)
+    {
+        LocalDateTime myDateObj = LocalDateTime.now();
+        Random random = new Random();
+
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd MMM. yyyy");
+        DateTimeFormatter dia = DateTimeFormatter.ofPattern("E");
+
+        String diaSetmana = myDateObj.format(dia);
+        String dataCompra = myDateObj.format(myFormatObj);
+
+        nomPelicula += " ".repeat(Math.max(0, numCaractersPelicula));
+
+        do
+        {
+            // int codiCompra = random.nextInt((999999999) + 100000000);
+            int codiCompra = random.nextInt((999999999 + 1) - 100000000) + 100000000;
+
+            System.out.println();
+            System.out.println("|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|");
+            System.out.println("|||||||||| CINES IMPERIAL ||||||||||");
+            System.out.println("|__________________________________|");
+            System.out.println("|                                  |");
+            System.out.println("| SESSIÓ: " + horariComplet + "            SALA: " + (idPelicula + 1) + " |");
+
+            System.out.print("| ");
+
+            for (int i = 0; i < numCaractersPelicula; i++) {
+                System.out.print(" ");
+            }
+
+            System.out.println(nomPelicula.toUpperCase() + " |");
+
+
+            // System.out.println("| " + nomPelicula.toUpperCase() + "|");
+            System.out.println("|                                  |");
+
+            if (butaquesResevades.get(numEntrades - 1) < 10)
+            {
+                System.out.println("| FILA: 0" + filesResevades.get(numEntrades - 1) + "              BUTACA: 0" + butaquesResevades.get(numEntrades - 1) + " |");
+            }
+            else
+            {
+                System.out.println("| FILA: 0" + filesResevades.get(numEntrades - 1) + "              BUTACA: " + butaquesResevades.get(numEntrades - 1) + " |");
+            }
+
+            System.out.println("|                                  |");
+            System.out.printf("|     %.2f€ I.V.A.: 10%% inclòs     | \n", PREU_ENTRADA);
+
+            if (Objects.equals(diaSetmana, "vie") || Objects.equals(diaSetmana, "sáb") || Objects.equals(diaSetmana, "dom"))
+            { System.out.println("|      CAP DE SETMANA/FESTIUS      |"); }
+            else
+            { System.out.println("|             LABORABLES           |"); }
+
+            System.out.println("| " + dataCompra + "   R.E.F.: " +  codiCompra + " |");
+            System.out.println("|__________________________________|");
+
+            numEntrades--;
+        } while (numEntrades > 0);
+    }
+    private static void cancelarCompra(ArrayList<Integer> butaquesResevades, String[][] sales, int idPelicula)
+    {
+        int posicioEntrada = 0;
+
+        for (int i = 0; i < sales.length; i++)
+        {
+            if (i == idPelicula)
+            {
+                for (int j = 0; j < sales[i].length; j++)
+                {
+                    if (Objects.equals(sales[i][j], "XX"))
+                    {
+                        sales[i][j] = "0" + butaquesResevades.get(posicioEntrada++);
+                    }
+                }
+
+                break;
+            }
+        }
+
+        System.out.println("\n" + "Compra cancelada...");
+    }
+    private static void pagamentMetalic(float preuCompra)
+    {
+        Scanner input = new Scanner(System.in);
+
+        float importClient = 0.00f;
+
+        System.out.println("\n" + "||| PAGAMENT AMB METÀl·LIC |||");
+        System.out.printf("Preu total de la compra: %.2f€ \n", (preuCompra));
+
+        do
+        {
+            do
+            {
+                importClient += llegirFloat("Introdueix el import (màx. 50€): ", " ERROR: Import no vàlid", 0, 50);
+
+            } while (!comprovarImport(importClient));
+        } while (importClient < preuCompra);
+
+        System.out.printf("\nPagament correcte, no olvidi el canvi de %.2f€ \n", (importClient - preuCompra));
+    }
+    private static boolean comprovarImport(float importClient)
+    {
+        final float[] DINERS = {0.01f, 0.02f, 0.05f, 0.10f, 0.20f, 0.50f, 1.0f, 2.0f, 5.0f, 10.0f, 20.0f, 50.0f};
+
+        boolean comprovarImport = false;
+
+        for (float valor : DINERS)
+        {
+            if (importClient == valor)
+            {
+                comprovarImport = true;
+                break;
+            }
+        }
+
+        if (!comprovarImport)
+        {
+            System.out.println(" ERROR: Moneda/Bitllet no vàlid");
+        }
+
+        return comprovarImport;
+    }
+    private static void pagamentTargeta(float preuCompra)
+    {
+        Scanner input = new Scanner(System.in);
+        Random random = new Random();
+
+        int errorPagament = 0;
+
+        System.out.println("\n" + "|||| PAGAMENT AMB TARGETA ||||");
+        System.out.printf("Preu total de la compra: %.2f€ \n", (preuCompra));
+        System.out.println("Apropi la targeta al datàfon...");
+        input.nextLine();
+
+        do
+        {
+            errorPagament = random.nextInt((50) + 1);
+
+            if (errorPagament == 1)
+            {
+                System.out.println("\n" + " ERROR: Lectura de targeta no vàlida...");
+                System.out.println("Apropi la targeta al datàfon...");
+                input.nextLine();
+            }
+            else
+            {
+                System.out.println("Pagament correcte, aquí té les entrades");
+            }
+        } while (errorPagament == 1);
+    }
+    private static void posarButaquesOcupades(String[][] sales, int idPelicula)
+    {
+        for (int i = 0; i < sales.length; i++)
+        {
+            if (i == idPelicula)
+            {
+                for (int j = 0; j < sales[i].length; j++)
+                {
+                    if (Objects.equals(sales[i][j], "XX"))
+                    {
+                        sales[i][j] = "--";
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+    private static boolean numHorarisPelicules(int[][] horari, int idPelicula)
+    {
+        boolean numHorarisPelicules = false;
+        int numHoraris = 0;
+
+        for (int i = 0; i < horari.length; i++)
+        {
+            if (horari[i][0] == idPelicula)
+            {
+                numHoraris++;
+            }
+        }
+
+        if (numHoraris > 1) { numHorarisPelicules = true; }
+
+        return numHorarisPelicules;
+    }
+    private static int buscarIdPelicula(String[] cartellera, String nomPelicula)
+    {
+        int idPelicula = 0;
+
+        for (int i = 0; i < cartellera.length; i++)
+        {
+            if (Objects.equals(cartellera[i].toLowerCase(), nomPelicula.toLowerCase()))
+            {
+                idPelicula = i;
+                break;
+            }
+        }
+
+        return idPelicula;
+    }
+    private static String buscarHorari(int[][] horari, int idPelicula, String horariComplet)
     {
         Scanner input = new Scanner(System.in);
 
@@ -165,30 +454,27 @@ public class Main
             }
             else
             {
-                if(comprovarHorariExisteix(horari, cartellera, horariComplet, nomPelicula)) { formatHorari = true; }
+                if(comprovarHorariExisteix(horari, idPelicula, horariComplet)) { formatHorari = true; }
                 else { System.out.print(" ERROR: Horari no disponible per aquesta pel·lícula"); }
             }
         } while (!formatHorari);
+
+        return horariComplet;
     }
-    private static int contarButaquesLliures(String[][] sales, String[] cartellera, String nomPelicula)
+    private static int contarButaquesLliures(String[][] sales, int idPelicula)
     {
         int numButaques = 0;
 
-        for (int a = 0; a < cartellera.length; a++)
+        for (int i = 0; i < sales.length; i++)
         {
-            if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+            if (i == idPelicula)
             {
-                for (int i = 0; i < sales.length; i++)
+                for (int j = 0; j < sales[i].length; j++)
                 {
-                    for (int j = 0; j < sales[i].length; j++)
+                    if (Objects.equals(sales[i][j], "--") || Objects.equals(sales[i][j], "XX"))
                     {
-                        if (Objects.equals(sales[i][j], "--"))
-                        {
-                            numButaques++;
-                        }
+                        numButaques++;
                     }
-
-                    break;
                 }
 
                 break;
@@ -197,74 +483,119 @@ public class Main
 
         return numButaques;
     }
-    private static void escollirButaca(String[][] sales, int[][] entrades, String[] cartellera, String nomPelicula, int numEntrades)
+    private static void escollirButaca(ArrayList<Integer> butaquesResevades, ArrayList<Integer> filesResevades, String[][] sales, int numEntrades, int idPelicula)
     {
-        // TODO: Fer el tema de comprovar que la butaca no estigui buida
-
-        boolean butacaLliure = false;
-        int butaca = 0;
+        int fila, butaca;
 
         do
         {
-            mostrarSala(sales, cartellera, nomPelicula);
-            // numEntrades--;
-            butacaLliure = true;
-        } while (!butacaLliure /* || numEntrades > 0 */);
+            mostrarSala(sales, idPelicula);
+
+            System.out.println();
+
+            do
+            {
+                fila = llegirInt("Escull un fila: ", " ERROR: Fila no vàlida", 1, 4);
+                butaca = llegirInt("Escull una butaca: ", " ERROR: Butaca no vàlida", 1, 20);
+
+                butaquesResevades.add(butaca);
+                filesResevades.add(fila);
+
+                butaca = switch (fila) {
+                    case 2 -> butaca + 21;
+                    case 3 -> butaca + 42;
+                    case 4 -> butaca + 63;
+                    default -> butaca;
+                };
+            } while (!butacaLliure(sales, fila, butaca, idPelicula));
+
+            sales[idPelicula][butaca - 1] = "XX";
+
+
+            numEntrades--;
+        } while (numEntrades > 0);
     }
-    private static void mostrarSala(String[][] sales, String[] cartellera, String nomPelicula)
+    private static boolean butacaLliure(String[][] sales, int fila, int butaca, int idPelicula)
     {
+        boolean butacaLliure = true;
+
+        if (Objects.equals(sales[idPelicula][butaca - 1], "--") || Objects.equals(sales[idPelicula][butaca - 1], "XX"))
+        {
+            butacaLliure = false;
+
+            System.out.println(" ERROR: Aquesta butaca està ocupada");
+        }
+
+        return butacaLliure;
+    }
+    private static void mostrarSala(String[][] sales, int idPelicula)
+    {
+        final String RED = "\033[31m";
+        final String GREEN = "\033[32m";
+        final String BLUE = "\033[34m";
+        final String YELLOW = "\033[33m";
+        final String RESET = "\u001B[0m";
+
         int finalFila = 20, columna1 = 3, columna2 = 15;
 
         System.out.println("\n" + "||||||||||||||||||||||||||||||||||||||||||||||||||||| PANTALLA |||||||||||||||||||||||||||||||||||||||||||||||||||||");
-        System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + "| FILA |");
+        System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t   BUTAQUES   \t\t\t\t\t\t\t\t\t\t\t\t" + "| FILA |");
 
-        for (int a = 0; a < cartellera.length; a++)
+        for (int i = 0; i < sales.length; i++)
         {
-            if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+            if (i == idPelicula)
             {
-                for (int i = 0; i < sales.length; i++)
+                for (int j = 0; j < sales[i].length; j++)
                 {
-                    for (int j = 0; j < sales[i].length; j++)
+                    if (j == 0)
                     {
-                        if (j == 0)
-                        {
-                            System.out.print("|");
-                        }
+                        System.out.print("|");
+                    }
 
-                        if (j != finalFila)
+                    if (j != finalFila)
+                    {
+                        if (Objects.equals(sales[i][j], "--"))
                         {
-                            System.out.print(" " + sales[i][j] + " |");
+                            System.out.print(" " + RED + sales[i][j] + RESET + " |");
+                        }
+                        else if (Objects.equals(sales[i][j], "XX"))
+                        {
+                            System.out.print(" " + YELLOW + sales[i][j] + RESET + " |");
                         }
                         else
                         {
-                            System.out.print("- " + sales[i][j] + " -|");
-                        }
-
-                        if (j == finalFila && j != (sales[i].length - 1))
-                        {
-                            System.out.print("\n" + "|");
-                            finalFila += 21;
-                        }
-                        else if (j == columna1)
-                        {
-                            System.out.print("   |");
-                            columna1 += 21;
-                        }
-                        else if (j == columna2)
-                        {
-                            System.out.print("   |");
-                            columna2 += 21;
+                            System.out.print(" " + GREEN + sales[i][j] + RESET + " |");
                         }
                     }
+                    else
+                    {
+                        System.out.print("- " + BLUE + sales[i][j] + RESET + " -|");
+                    }
 
-                    break;
+                    if (j == finalFila && j != (sales[i].length - 1))
+                    {
+                        System.out.print("\n" + "|");
+                        finalFila += 21;
+                    }
+                    else if (j == columna1)
+                    {
+                        System.out.print("   |");
+                        columna1 += 21;
+                    }
+                    else if (j == columna2)
+                    {
+                        System.out.print("   |");
+                        columna2 += 21;
+                    }
                 }
+
+                break;
             }
         }
 
         System.out.println();
     }
-    private static boolean comprovarHorariExisteix(int[][] horari, String[] cartellera, String horariComplet, String nomPelicula)
+    private static boolean comprovarHorariExisteix(int[][] horari, int idPelicula, String horariComplet)
     {
         boolean horariExisteix = false;
 
@@ -273,21 +604,17 @@ public class Main
 
         if (!(hora > 23 || hora < 0) || !(minuts > 59 || minuts < 0))
         {
-            for (int a = 0; a < cartellera.length; a++)
+            for (int i = 0; i < horari.length; i++)
             {
-                if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+                if (horari[i][0] == idPelicula)
                 {
-                    for (int i = 0; i < horari.length; i++)
+                    for (int j = 0; j < horari[j].length; j++)
                     {
-                        for (int j = 0; j < horari[j].length; j++)
+                        if (hora == horari[i][1] && minuts == horari[i][2])
                         {
-                            if (horari[i][0] == a)
-                            {
-                                if (hora == horari[i][1] && minuts == horari[i][2])
-                                {
-                                    horariExisteix = true;
-                                }
-                            }
+                            horariExisteix = true;
+
+                            break;
                         }
                     }
                 }
@@ -295,6 +622,13 @@ public class Main
         }
 
         return horariExisteix;
+    }
+    private static int convertirHores(String horariComplet)
+    {
+        int hora = 0;
+        String aux = String.valueOf(horariComplet.charAt(0)) + String.valueOf(horariComplet.charAt(1));
+
+        return hora = Integer.parseInt(aux);
     }
     private static int convertirMinuts(String horariComplet)
     {
@@ -304,35 +638,20 @@ public class Main
 
         return minuts = Integer.parseInt(aux);
     }
-    private static int convertirHores(String horariComplet)
+    private static void mostrarHorariPelicula(int[][] horari, int idPelicula, boolean numHorarisPelicules)
     {
-        int hora = 0;
-        String aux = String.valueOf(horariComplet.charAt(0)) + String.valueOf(horariComplet.charAt(1));
-
-        return hora = Integer.parseInt(aux);
-    }
-    private static void mostrarHorariPelicula(String[] cartellera, int[][] horari, String nomPelicula)
-    {
-        for (int a = 0; a < cartellera.length; a++)
+        for (int i = 0; i < horari.length; i++)
         {
-            if (Objects.equals(cartellera[a].toLowerCase(), nomPelicula.toLowerCase()))
+            for (int j = 0; j < horari[j].length; j++)
             {
-                System.out.print("\n" + "Horaris disponibles: ");
-
-                for (int i = 0; i < horari.length; i++)
+                if (horari[i][0] == idPelicula)
                 {
-                    for (int j = 0; j < horari[j].length; j++)
-                    {
-                        if (horari[i][0] == a)
-                        {
-                            System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+                    System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
 
-                            break;
-                        }
-                    }
+                    if (!numHorarisPelicules) { break; }
+
+                    break;
                 }
-
-                break;
             }
         }
     }
@@ -379,15 +698,25 @@ public class Main
     private static void buscarPerSesio(String[] cartellera, int[][] horari)
     {
         int hora;
+
         hora = llegirInt("Introdueix la hora a la que vols anar: ", "Aquesta hora no existeix", 0,24);
-        for (int i = 0; i < cartellera.length; i++) {
-            if (hora == horari[i][1]){
+
+        for (int i = 0; i < cartellera.length; i++)
+        {
+            if (hora == horari[i][1])
+            {
                 int posicio= horari[i][0];
+
                 System.out.println(cartellera[posicio]);
-                for (int j = 0; j < horari.length; j++) {
-                    for (int k = 0; k <2; k++) {
-                        if (posicio == horari[j][k]){
-                            if (hora == horari[j][1]){
+
+                for (int j = 0; j < horari.length; j++)
+                {
+                    for (int k = 0; k <2; k++)
+                    {
+                        if (posicio == horari[j][k])
+                        {
+                            if (hora == horari[j][1])
+                            {
                                 System.out.print(horari[j][1]+":");
                                 System.out.println(horari[j][2]);
                             }
@@ -397,7 +726,6 @@ public class Main
             }
         }
     }
-
     private static void mostrarNomsPelicules(String[] cartellera)
     {
         for (String nomPelicula : cartellera)
@@ -446,7 +774,7 @@ public class Main
 
         do
         {
-            System.out.println(missatge);
+            System.out.print(missatge);
             controlErrors = input.hasNextFloat();
 
             if (!controlErrors)
@@ -495,13 +823,13 @@ public class Main
         horari[4][1] = 15;
         horari[4][2] = 15;
 
-        cartellera[3] = "Todo a la vez en todas partes";
+        cartellera[3] = "Momias";
 
         horari[5][0] = 3;
         horari[5][1] = 15;
         horari[5][2] = 15;
 
-        cartellera[4] = "Avatar: El sentido del agua";
+        cartellera[4] = "Avatar: El sentido del agua (3D)";
 
         horari[6][0] = 4;
         horari[6][1] = 17;
@@ -519,7 +847,7 @@ public class Main
         horari[9][1] = 22;
         horari[9][2] = 15;
 
-        cartellera[6] = "Titanic (25 aniversario) ";
+        cartellera[6] = "Titanic (25 aniversario)";
 
         horari[10][0] = 6;
         horari[10][1] = 10;
@@ -528,7 +856,7 @@ public class Main
         horari[11][1] = 12;
         horari[11][2] = 45;
 
-        cartellera[7] = "El piloto";
+        cartellera[7] = "Almas en pena de Inisherin";
 
         horari[12][0] = 7;
         horari[12][1] = 18;
@@ -586,18 +914,17 @@ public class Main
                 }
             }
         }
-        // Possar num a la fila
-        int numFila = 0, fila = 20;
 
+        // Possar num a la fila
         for (int i = 0; i < sales.length; i++)
         {
+            int numFila = 0;
+
             for (int j = 0; j < sales[i].length; j++)
             {
-                if (j == fila)
+                if (j == 20 || j == 41 || j == 62 || j == 83)
                 {
                     sales[i][j] = "0" + (++numFila);
-
-                    fila += 21;
                 }
             }
         }
