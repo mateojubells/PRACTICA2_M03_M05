@@ -708,7 +708,8 @@ public class Main
             System.out.println();
         }
     }
-    private static void buscarPerSesio(int[][] horari, String[] cartellera){
+    private static void buscarPerSesio(int[][] horari, String[] cartellera)
+    {
         Scanner llegir = new Scanner(System.in);
         boolean horaExisteix=false;
         boolean trobat = false;
@@ -720,14 +721,9 @@ public class Main
         int imprimirPosicio=0;
         System.out.println("Introdueix la hora que vols anar");
         hora = llegir.nextLine();
-        if (hora.substring(0, 1).matches("[a-z]*")||hora.substring(3, 4).matches("[a-z]*")||hora.substring(0, 1).matches("[A-Z]*")||hora.substring(3, 4).matches("[A-Z]*")){
-            System.out.println("Valor no valid");
-            hora = "";
-            buscarPerSesio(horari, cartellera);
-        }
+        if (hora.substring(0, 1).matches("[0-9]")&&hora.substring(3, 4).matches("[0-9]")){
         hores = convertirHores(hora);
         minuts = convertirMinuts(hora);
-
         if (!(hores > 23 || hores < 0) || !(minuts > 59 || minuts < 0))
         {
             for (int a = 0; a < cartellera.length; a++)
@@ -767,11 +763,15 @@ public class Main
                     System.out.println(horari[imprimirPosicio][1]+":"+ horari[imprimirPosicio][2]);
                     System.out.println("");
                 }
-
             }
             System.out.println();
-
-        } }
+        }
+    }else{
+            System.out.println("Valor no valid");
+            hora = "";
+            buscarPerSesio(horari, cartellera);
+        }
+    }
     private static void mostrarNomsPelicules(String[] cartellera)
     {
         for (String nomPelicula : cartellera)
