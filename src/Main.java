@@ -109,7 +109,7 @@ public class Main
                     posicio = i;
                 }
             }
-            if (trobat==true)
+            if (trobat)
             {
                 System.out.print(cartellera[posicio]);
                 System.out.println(": esta disponible!!");
