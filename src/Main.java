@@ -32,17 +32,17 @@ public class Main
         else
         {
             switch (opcioMenu) {
-                case 1 -> menuVeureCartellera(horari, cartellera);
+                case 1 -> menuVeureCartellera(horari, cartellera, aliasCartellera);
                 case 2 -> comprarEntrades(horari, sales, cartellera, aliasCartellera);
             }
 
             menuPrincipal(horari, sales, cartellera, aliasCartellera);
         }
     }
-    private static void menuVeureCartellera(int[][] horari, String[] cartellera)
+    private static void menuVeureCartellera(int[][] horari, String[] cartellera, String[] aliasCartellera)
     {
         final String TITOL = "|||||||| VEURE  PELIS ||||||||";
-        final String MENU_CARTELLERA = " 1. Veure cartellera \n" + " 2. Veure noms pel·lícules \n" + " 3. Buscar pel·lícula \n" + " 4. Buscar segons hora \n" + " 5. Tornar al inici";
+        final String MENU_CARTELLERA = " 1. Veure cartellera \n" + " 2. Veure noms pel·lícules \n" + " 3. Buscar pel·lícula \n" + " 4. Buscar per sessió \n" + " 5. Tornar al inici";
 
         System.out.println("\n" + TITOL + "\n" + MENU_CARTELLERA);
 
@@ -56,83 +56,50 @@ public class Main
         {
             switch (opcioMenu)
             {
-                case 1:
+                case 1: /* -- VEURE CARTELLERA -- */
                     System.out.print("\n" + "||||||||| CARTELLERA |||||||||");
                     mostrarCartelleraHoraris(horari, cartellera);
                     break;
-                case 2:
-                    System.out.print("\n" + "||||||||| CARTELLERA |||||||||");
+                case 2: /* -- VEURE NOMS PEL·LÍCULES -- */
+                    System.out.println("\n" + "||||| CARTELLERA (TÍTOL) |||||");
                     mostrarNomsPelicules(cartellera);
                     break;
-                case 3:
+                case 3: /* -- BUSCAR PEL·LÍCULA -- */
                     System.out.println("\n"+ "||||| BUSCAR  PEL·LÍCULA |||||");
-                    String nomPelicula = buscarPelicula(cartellera, horari,"Escull una pelicula a buscar "+"\n (Per sortir escrigui exit): ");
-                    for (int a = 0; a < cartellera.length; a++) {
-                        if (Objects.equals(nomPelicula,cartellera[a]))
-                        {
 
-                        }
-                    }
+                    mostrarNomsPelicules(cartellera);
+                    buscarPelicula(horari, cartellera, aliasCartellera,"Escull una pel·lícula a buscar (C per sortir): ");
                     break;
-                case 4:
+                case 4: /* -- BUSCAR PER SESSIÓ -- */
+                    System.out.print("\n"+ "||||| BUSCAR PER SESSIÓ ||||||");
                     buscarPerSesio(horari, cartellera);
                     break;
             }
 
-            menuVeureCartellera(horari, cartellera);
+            menuVeureCartellera(horari, cartellera, aliasCartellera);
         }
     }
-    private static String buscarPelicula(String[] cartellera, int[][] horari, String missatge){
+    private static void buscarPelicula(int[][] horari, String[] cartellera, String[] aliasCartellera, String missatge){
         Scanner llegir = new Scanner(System.in);
 
-        boolean trobat= false;
-        int posicio=0;
+        String nomPelicula;
 
-        System.out.print(missatge);
-        String nomPelicula = llegir.nextLine();
-
-        if (Objects.equals(nomPelicula.toLowerCase(),"exit"))
+        do
         {
-            System.out.println("Sortint...");
-        }
-        else
+            System.out.print(missatge);
+            nomPelicula = llegir.nextLine();
+        } while (!comprovarPeliculaExisteix(cartellera, aliasCartellera, nomPelicula) && !Objects.equals(nomPelicula.toLowerCase(), "c"));
+
+        int idPelicula = buscarIdPelicula(cartellera, aliasCartellera, nomPelicula);
+
+        if (!Objects.equals(nomPelicula.toLowerCase(), "c"))
         {
-            for (int i =0; i<cartellera.length; i++)
-            {
-                if (Objects.equals(cartellera[i].toLowerCase(), nomPelicula.toLowerCase()))
-                {
-                    trobat =true;
-                    posicio = i;
-                }
-            }
-            if (trobat)
-            {
-                System.out.print(cartellera[posicio]);
-                System.out.println(": esta disponible!!");
-                System.out.println("Els horaris disponibles son: ");
+            boolean numHorarisPelicules = numHorarisPelicules(horari, idPelicula);
 
-                for (int i = 0; i < 16; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        if (horari[i][j]==posicio){
-                            System.out.print(horari[i][1]+":" +horari[i][2]);
-                            System.out.println("  ");
-                        }
-
-
-                    }
-
-                }
-
-
-            }
-            else
-            {
-                System.out.println("Pelicula no trobada, torna a intentar");
-                buscarPelicula(cartellera, horari, missatge);
-            }
+            System.out.print("\n" + cartellera[idPelicula] + " - ");
+            mostrarHorariPelicula(horari, idPelicula, numHorarisPelicules);
+            System.out.println();
         }
-
-        return nomPelicula;
     }
     private static void comprarEntrades(int[][] horari, String[][] sales, String[] cartellera, String[] aliasCartellera)
     {
@@ -349,7 +316,14 @@ public class Main
             importClient += importAcumulat;
         } while (preuCompra > importClient);
 
-        System.out.printf("\nPagament correcte, no olvidi el canvi de %.2f€ \n", (importClient - preuCompra));
+        if ((importClient - preuCompra) > 0.00f)
+        {
+            System.out.printf("\nPagament correcte, no olvidi el canvi de %.2f€ \n", (importClient - preuCompra));
+        }
+        else
+        {
+            System.out.println("Pagament correcte...");
+        }
     }
     private static boolean comprovarImport(float importAcumulat)
     {
@@ -716,6 +690,96 @@ public class Main
     }
     private static void buscarPerSesio(int[][] horari, String[] cartellera)
     {
+        Scanner input = new Scanner(System.in);
+
+        String horariComplet;
+        boolean formatHorari = false;
+        int hores = 0, minuts = 0;
+
+
+        do
+        {
+            System.out.print("\n" + "Escull una sessió (HH:MM): ");
+            horariComplet = input.nextLine();
+
+            if (horariComplet.length() != 5) // Comprovar que l'hora no tingui menys/més de 5 caràcters
+            {
+                System.out.print(" ERROR: Format d'horari no vàlid");
+            }
+            else if (!Objects.equals(horariComplet.charAt(2), ':')) // Per comparar amb el char.At() s'ha de fer amb ''
+            {
+                System.out.print(" ERROR: Format d'horari no vàlid");
+            }
+            else
+            {
+                hores = convertirHores(horariComplet);
+                minuts = convertirMinuts(horariComplet);
+
+                if ((hores < 0 || hores > 24) || (minuts < 0 || minuts > 60 ))
+                {
+                    System.out.print(" ERROR: Format d'horari no vàlid");
+                }
+                else
+                {
+                    formatHorari = true;
+                }
+            }
+        } while (!formatHorari);
+
+
+        mostrarSessionsSegonsHora(horari, cartellera, hores, minuts);
+    }
+    private static void mostrarSessionsSegonsHora (int[][] horari, String[] cartellera, int hores, int minuts)
+    {
+        System.out.print("\n" + "|||| SESSIONS DISPONIBLES ||||");
+
+        for (int a = 0; a < cartellera.length; a++)
+        {
+            for (int i = 0; i < horari.length; i++)
+            {
+                if (horari[i][0] == a)
+                {
+                    if (horari[i][1] > hores)
+                    {
+                        if (i < (horari.length - 1))
+                        {
+                            if (horari[i][0] != horari[i + 1][0] && i > 1)
+                            {
+                                System.out.print("\n\n" + cartellera[a] + " - ");
+                            }
+                            else if (horari[i][0] != horari[i + 1][0])
+                            {
+                                System.out.print("\n" + cartellera[a] + " - ");
+                            }
+                        }
+
+                        System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+                    }
+                    else if (horari[i][1] == hores && horari[i][2] >= minuts)
+                    {
+                        if (i < (horari.length - 1))
+                        {
+                            if (horari[i][0] != horari[i + 1][0] && i > 1)
+                            {
+                                System.out.print("\n\n" + cartellera[a] + " - ");
+                            }
+                            else if (horari[i][0] != horari[i + 1][0])
+                            {
+                                System.out.print("\n" + cartellera[a] + " - ");
+                            }
+                        }
+
+                        System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+                    }
+                }
+            }
+        }
+
+        System.out.println();
+    }
+
+    /* private static void buscarPerSesio(int[][] horari, String[] cartellera)
+    {
         Scanner llegir = new Scanner(System.in);
         boolean horaExisteix=false;
         boolean trobat = false;
@@ -778,6 +842,7 @@ public class Main
             buscarPerSesio(horari, cartellera);
         }
     }
+     */
     private static void mostrarNomsPelicules(String[] cartellera)
     {
         for (String nomPelicula : cartellera)
@@ -890,7 +955,7 @@ public class Main
 
         horari[6][0] = 4;
         horari[6][1] = 17;
-        horari[6][2] = 30;
+        horari[6][2] = 15;
         horari[7][0] = 4;
         horari[7][1] = 19;
         horari[7][2] = 45;
