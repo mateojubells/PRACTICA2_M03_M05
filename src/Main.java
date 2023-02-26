@@ -31,14 +31,9 @@ public class Main
         }
         else
         {
-            switch (opcioMenu)
-            {
-                case 1:
-                    menuVeureCartellera(horari, cartellera);
-                    break;
-                case 2:
-                    comprarEntrades(horari, sales, cartellera, aliasCartellera);
-                    break;
+            switch (opcioMenu) {
+                case 1 -> menuVeureCartellera(horari, cartellera);
+                case 2 -> comprarEntrades(horari, sales, cartellera, aliasCartellera);
             }
 
             menuPrincipal(horari, sales, cartellera, aliasCartellera);
