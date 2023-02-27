@@ -978,21 +978,21 @@ public class Main
         float importAcumulat = 0.00f;
 
         System.out.println("\n" + "||| PAGAMENT AMB METÀl·LIC |||");
-        System.out.printf("Preu total de la compra: %.2f€ \n", (preuCompra));
+        System.out.printf("Preu total de la compra: %.2f€ \n", preuCompra);
 
         do
         {
-            float importClient = 0.0f;
+            float importClient = 0.00f;
 
-            if (importAcumulat > 0)
+            if (importAcumulat > 0.00f)
             {
-                System.out.printf("Import actual, %.2f€, encara falta a pagar %.2f€ \n", importClient, (preuCompra - importClient));
+                System.out.printf("Import actual, %.2f€, encara falta a pagar %.2f€ \n", importAcumulat, (preuCompra - importAcumulat));
             }
 
             do
             {
                 importClient = llegirFloat("Introdueix el import (màx. 50€): ", " ERROR: Import no vàlid", 0, 50);
-            } while (!comprovarImport(importAcumulat));
+            } while (!comprovarImport(importClient));
 
             importAcumulat += importClient;
         } while (preuCompra > importAcumulat);
@@ -1020,15 +1020,16 @@ public class Main
      */
     private static boolean comprovarImport(float importClient)
     {
-        final float[] DINERS = {0.01f, 0.02f, 0.05f, 0.10f, 0.20f, 0.50f, 1, 2, 5, 10, 20, 50};
+        final float[] DINERS = {0.01f, 0.02f, 0.05f, 0.10f, 0.20f, 0.50f, 1.00f, 2.00f, 5.00f, 10.00f, 20.00f, 50.00f};
 
         boolean comprovarImport = false;
 
-        for (float valor : DINERS)
+        for (float moneda : DINERS)
         {
-            if (importClient == valor)
+            if (moneda == importClient)
             {
                 comprovarImport = true;
+
                 break;
             }
         }
