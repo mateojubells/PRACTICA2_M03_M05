@@ -276,7 +276,6 @@ public class Main
         boolean formatHorari = false;
         int hores = 0, minuts = 0;
 
-
         do
         {
             System.out.print("\n" + "Escull una sessió (HH:MM): ");
@@ -359,48 +358,22 @@ public class Main
      * @since 1.0
      * @author Francesc Barceló
      */
+    // TODO: Arrelgar aixo : (
     private static void mostrarSessionsSegonsHora (int[][] horari, String[] cartellera, int hores, int minuts)
     {
         System.out.print("\n" + "|||| SESSIONS DISPONIBLES ||||");
 
-        for (int a = 0; a < cartellera.length; a++)
+        for (int i = 0; i < horari.length; i++)
         {
-            for (int i = 0; i < horari.length; i++)
+            if ((horari[i][1] == hores && horari[i][2] >= minuts) || horari[i][1] > hores)
             {
-                if (horari[i][0] == a)
+                System.out.print("\n\n" + cartellera[horari[i][0]] + " - ");
+
+                for (int j = 0; j < horari[j].length; j++)
                 {
-                    if (horari[i][1] == hores && horari[i][2] >= minuts)
-                    {
-                        if (i < (horari.length - 1))
-                        {
-                            if (horari[i][0] != horari[i + 1][0] && i > 1)
-                            {
-                                System.out.print("\n\n" + cartellera[a] + " - ");
-                            }
-                            else if (horari[i][0] != horari[i + 1][0])
-                            {
-                                System.out.print("\n" + cartellera[a] + " - ");
-                            }
-                        }
+                    System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
 
-                        System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
-                    }
-                    else if (horari[i][1] > hores )
-                    {
-                        if (i < (horari.length - 1))
-                        {
-                            if (horari[i][0] != horari[i + 1][0] && i > 1)
-                            {
-                                System.out.print("\n\n" + cartellera[a] + " - ");
-                            }
-                            else if (horari[i][0] != horari[i + 1][0])
-                            {
-                                System.out.print("\n" + cartellera[a] + " - ");
-                            }
-                        }
-
-                        System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
-                    }
+                    break;
                 }
             }
         }
