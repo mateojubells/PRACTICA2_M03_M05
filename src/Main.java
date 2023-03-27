@@ -358,22 +358,29 @@ public class Main
      * @since 1.0
      * @author Francesc Barceló
      */
-    // TODO: Arrelgar aixo : (
     private static void mostrarSessionsSegonsHora (int[][] horari, String[] cartellera, int hores, int minuts)
     {
         System.out.print("\n" + "|||| SESSIONS DISPONIBLES ||||");
 
-        for (int i = 0; i < horari.length; i++)
+        for (int a = 0; a < cartellera.length; a++)
         {
-            if ((horari[i][1] == hores && horari[i][2] >= minuts) || horari[i][1] > hores)
+            int test = 0;
+
+            for (int i = 0; i < horari.length; i++)
             {
-                System.out.print("\n\n" + cartellera[horari[i][0]] + " - ");
-
-                for (int j = 0; j < horari[j].length; j++)
+                if (horari[i][0] == a)
                 {
-                    System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+                    if ((horari[i][1] == hores && horari[i][2] >= minuts) || horari[i][1] > hores)
+                    {
+                        if (test == 0)
+                        {
+                            System.out.print("\n\n" + cartellera[a] + " - ");
+                        }
 
-                    break;
+                        System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+
+                        test++;
+                    }
                 }
             }
         }
