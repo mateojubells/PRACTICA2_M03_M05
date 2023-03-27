@@ -276,7 +276,6 @@ public class Main
         boolean formatHorari = false;
         int hores = 0, minuts = 0;
 
-
         do
         {
             System.out.print("\n" + "Escull una sessió (HH:MM): ");
@@ -365,41 +364,22 @@ public class Main
 
         for (int a = 0; a < cartellera.length; a++)
         {
+            int test = 0;
+
             for (int i = 0; i < horari.length; i++)
             {
                 if (horari[i][0] == a)
                 {
-                    if (horari[i][1] == hores && horari[i][2] >= minuts)
+                    if ((horari[i][1] == hores && horari[i][2] >= minuts) || horari[i][1] > hores)
                     {
-                        if (i < (horari.length - 1))
+                        if (test == 0)
                         {
-                            if (horari[i][0] != horari[i + 1][0] && i > 1)
-                            {
-                                System.out.print("\n\n" + cartellera[a] + " - ");
-                            }
-                            else if (horari[i][0] != horari[i + 1][0])
-                            {
-                                System.out.print("\n" + cartellera[a] + " - ");
-                            }
+                            System.out.print("\n\n" + cartellera[a] + " - ");
                         }
 
                         System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
-                    }
-                    else if (horari[i][1] > hores )
-                    {
-                        if (i < (horari.length - 1))
-                        {
-                            if (horari[i][0] != horari[i + 1][0] && i > 1)
-                            {
-                                System.out.print("\n\n" + cartellera[a] + " - ");
-                            }
-                            else if (horari[i][0] != horari[i + 1][0])
-                            {
-                                System.out.print("\n" + cartellera[a] + " - ");
-                            }
-                        }
 
-                        System.out.print(horari[i][1] + ":" + horari[i][2] + " ");
+                        test++;
                     }
                 }
             }
